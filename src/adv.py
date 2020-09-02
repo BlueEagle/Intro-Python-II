@@ -1,4 +1,7 @@
 from room import Room
+from player import Player
+import platform
+import os
 
 # Declare all the rooms
 
@@ -33,11 +36,24 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-#
-# Main
-#
 
-# Make a new player object that is currently in the 'outside' room.
+# Additional Features
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def existenceError(direction):
+    return f"It is impossible to move {direction} from here. There is simply nowhere to go!"
+
+
+def pause():
+    input("\n\nPress enter to continue from here.")
+
+    #
+    # Main
+    #
+    # Make a new player object that is currently in the 'outside' room.
+player = Player(room['outside'])
 
 # Write a loop that:
 #
@@ -49,3 +65,41 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+running = True
+while (running):
+    clear()
+    print(f"Location: {player.room.name}")
+    print(player.room.description)
+    select = str(input('Your move buddy! (n,s,w,e, or q): '))
+    if (select == 'q'):  # QUIT
+        clear()
+        running = False
+    if (select == 'n'):  # NORTH
+        try:
+            player.room = player.room.n_to
+        except:
+            clear()
+            print(existenceError('North'))
+            pause()
+    if (select == 's'):  # SOUTH
+        try:
+            player.room = player.room.s_to
+        except:
+            clear()
+            print(existenceError('South'))
+            pause()
+    if (select == 'w'):  # WEST
+        try:
+            player.room = player.room.w_to
+        except:
+            clear()
+            print(existenceError('West'))
+            pause()
+    if (select == 'e'):  # EAST
+        try:
+            player.room = player.room.e_to
+        except:
+            clear()
+            print(existenceError('East'))
+            pause()
