@@ -73,7 +73,7 @@ while (running):
     print(f"Location: {player.room.name}")
     print(player.room.description+"\n")
     if(len(player.room.items) > 0):
-        print("Items found in this room!")
+        print("Items found in this room:")
         player.room.print_items()
     select = str(
         input('\nYour move buddy!\nMOVE(n,s,w,e) QUIT(q) INVENTORY(i): '))
@@ -109,8 +109,8 @@ while (running):
             player.show_inventory()
     else:
         if(select[0] == 'get'):
-            select = combine_additional_args(select, 1)
+            # select = combine_additional_args(select, 1)
             player.take_item(select[1])
-        if(select[0] == 'drop'):
-            select = combine_additional_args(select, 1)
+        elif(select[0] == 'drop'):
+            # select = combine_additional_args(select, 1)
             player.drop_item(select[1])

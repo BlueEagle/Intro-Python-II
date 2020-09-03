@@ -13,8 +13,8 @@ class Player:
         item_found = False
         for item in self.room.items:
             if (item.name == item_name):
-                self.room.items.remove(item)
                 self.items.append(item)
+                self.room.items.remove(item)
                 item.on_take()
                 item_found = True
         if (not item_found):
@@ -23,12 +23,14 @@ class Player:
 
     def drop_item(self, item_name):
         item_found = False
+        utils.display_text(f"Before loop: {self.room.items}")
         for item in self.items:
             if(item.name == item_name):
-                self.items.remove(item)
                 self.room.items.append(item)
+                self.items.remove(item)
                 item.on_drop()
                 item_found = True
+        utils.display_text(f"After loop: {self.room.items}")
         if (not item_found):
             utils.display_text(
                 f"You empty your pockets and sift through your backpack... There is no {item_name} to be found!")

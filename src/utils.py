@@ -2,7 +2,8 @@ import os
 
 
 def clear():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    return
+    # os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def existence_error(direction):
