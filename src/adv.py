@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from item import Item
 import platform
 import os
 
@@ -7,7 +8,7 @@ import os
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons", [Item('teapot', 'I\'m a little teapot!')]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -42,18 +43,26 @@ def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-def existenceError(direction):
+def existence_error(direction):
     return f"It is impossible to move {direction} from here. There is simply nowhere to go!"
 
 
 def pause():
     input("\n\nPress enter to continue from here.")
 
-    #
-    # Main
-    #
-    # Make a new player object that is currently in the 'outside' room.
-player = Player(room['outside'])
+# TODO: add functionality for combine_additional_args
+
+
+def combine_additional_args(arg_list, starting_arg):
+    return arg_list
+
+#
+# Main
+#
+# Make a new player object that is currently in the 'outside' room.
+
+
+player = Player('John Doe', room['outside'])
 
 # Write a loop that:
 #
@@ -70,36 +79,51 @@ running = True
 while (running):
     clear()
     print(f"Location: {player.room.name}")
-    print(player.room.description)
-    select = str(input('Your move buddy! (n,s,w,e, or q): '))
-    if (select == 'q'):  # QUIT
-        clear()
-        running = False
-    if (select == 'n'):  # NORTH
-        try:
-            player.room = player.room.n_to
-        except:
+    print(player.room.description+"\n")
+    if(len(player.room.items) > 0):
+        print("Items found in this room!")
+        player.room.print_items()
+    select = str(input('\nYour move buddy! (n,s,w,e, or q): '))
+    select = select.split(" ")
+    if (len(select) == 1):
+        select = select[0]
+
+    if (isinstance(select, str)):
+        if (select == 'q'):  # QUIT
             clear()
-            print(existenceError('North'))
-            pause()
-    if (select == 's'):  # SOUTH
-        try:
-            player.room = player.room.s_to
-        except:
+            running = False
+        if (select == 'n'):  # NORTH
+            try:
+                player.room = player.room.n_to
+            except:
+                clear()
+                print(existence_error('North'))
+                pause()
+        if (select == 's'):  # SOUTH
+            try:
+                player.room = player.room.s_to
+            except:
+                clear()
+                print(existence_error('South'))
+                pause()
+        if (select == 'w'):  # WEST
+            try:
+                player.room = player.room.w_to
+            except:
+                clear()
+                print(existence_error('West'))
+                pause()
+        if (select == 'e'):  # EAST
+            try:
+                player.room = player.room.e_to
+            except:
+                clear()
+                print(existence_error('East'))
+                pause()
+    else:
+        if(select[0] == 'get'):
+            select = combine_additional_args(select, 1)
             clear()
-            print(existenceError('South'))
-            pause()
-    if (select == 'w'):  # WEST
-        try:
-            player.room = player.room.w_to
-        except:
-            clear()
-            print(existenceError('West'))
-            pause()
-    if (select == 'e'):  # EAST
-        try:
-            player.room = player.room.e_to
-        except:
-            clear()
-            print(existenceError('East'))
+            print(f"{player.name} searches the room for {select[1]}...")
+            player.take_item(select[1])
             pause()
