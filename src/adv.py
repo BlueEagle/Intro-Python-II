@@ -1,8 +1,8 @@
 from room import Room
 from player import Player
 from item import Item
-import platform
 import os
+import utils
 
 # Declare all the rooms
 
@@ -39,16 +39,8 @@ room['treasure'].s_to = room['narrow']
 
 
 # Additional Features
-def clear():
-    os.system('cls' if os.name == 'nt' else 'clear')
+clear, existence_error, pause, display_text = utils.clear, utils.existence_error, utils.pause, utils.display_text
 
-
-def existence_error(direction):
-    return f"It is impossible to move {direction} from here. There is simply nowhere to go!"
-
-
-def pause():
-    input("\n\nPress enter to continue from here.")
 
 # TODO: add functionality for combine_additional_args
 
@@ -83,47 +75,42 @@ while (running):
     if(len(player.room.items) > 0):
         print("Items found in this room!")
         player.room.print_items()
-    select = str(input('\nYour move buddy! (n,s,w,e, or q): '))
+    select = str(
+        input('\nYour move buddy!\nMOVE(n,s,w,e) QUIT(q) INVENTORY(i): '))
     select = select.split(" ")
     if (len(select) == 1):
         select = select[0]
 
     if (isinstance(select, str)):
         if (select == 'q'):  # QUIT
-            clear()
+            utils.clear()
             running = False
         if (select == 'n'):  # NORTH
             try:
                 player.room = player.room.n_to
             except:
-                clear()
-                print(existence_error('North'))
-                pause()
+                display_text(existence_error('North'))
         if (select == 's'):  # SOUTH
             try:
                 player.room = player.room.s_to
             except:
-                clear()
-                print(existence_error('South'))
-                pause()
+                display_text(existence_error('South'))
         if (select == 'w'):  # WEST
             try:
                 player.room = player.room.w_to
             except:
-                clear()
-                print(existence_error('West'))
-                pause()
+                display_text(existence_error('West'))
         if (select == 'e'):  # EAST
             try:
                 player.room = player.room.e_to
             except:
-                clear()
-                print(existence_error('East'))
-                pause()
+                display_text(existence_error('East'))
+        if (select == 'i' or select == 'inventory'):
+            player.show_inventory()
     else:
         if(select[0] == 'get'):
             select = combine_additional_args(select, 1)
-            clear()
-            print(f"{player.name} searches the room for {select[1]}...")
             player.take_item(select[1])
-            pause()
+        if(select[0] == 'drop'):
+            select = combine_additional_args(select, 1)
+            player.drop_item(select[1])
